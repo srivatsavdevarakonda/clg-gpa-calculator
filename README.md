@@ -1,4 +1,4 @@
-🎓 GPA Calculator
+##🎓 GPA Calculator
 A simple, intuitive, and dynamic web application for calculating Semester Grade Point Average (SGPA) and Cumulative Grade Point Average (CGPA). Built with Flask and vanilla JavaScript, this tool is designed to help students track their academic progress and plan for the future.
 
 Live Demo: https://clg-gpa-calculator.onrender.com
