@@ -22,7 +22,7 @@ Try it here:
 
 ---
 
-## 🖼️ Screenshots *(optional placeholders)*
+## 🖼️ Screenshots 
 
 **Dashboard / Calculator:**
 
