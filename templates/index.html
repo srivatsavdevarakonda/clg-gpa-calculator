@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>GPA Calculator 🎓</h1>
+        <p>Estimate your SGPA and CGPA. Your data is saved automatically in your browser.</p>
+        
+        <form action="/" method="post" id="gpa-form">
+            <!-- Semester Input -->
+            <div class="form-group">
+                <label for="semester-input">Current Semester</label>
+                <input type="number" id="semester-input" name="semester" min="1" max="10" value="1" required>
+            </div>
+
+            <!-- Container for Previous SGPA inputs -->
+            <div id="previous-sgpa-container">
+                <!-- JavaScript will populate this area -->
+            </div>
+            
+            <hr>
+
+            <h3>Enter Current Semester Courses</h3>
+            <table id="course-table">
+                <thead>
+                    <tr>
+                        <th class="course-name-col">Course Name</th>
+                        <th>Credit</th>
+                        <th>Grade</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="course-list">
+                    <!-- Rows will be added dynamically by JavaScript -->
+                </tbody>
+            </table>
+
+            <div class="actions">
+                <button type="button" id="add-course-btn">Add Course</button>
+                <button type="button" id="clear-data-btn" class="clear-btn">Clear All Data</button>
+                <button type="submit" class="calculate-btn">Calculate GPA</button>
+            </div>
+        </form>
+
+        <!-- Display Results -->
+        {% if results_exist %}
+        <div class="results">
+            <h2>Your Results ✨</h2>
+            <div class="result-metrics">
+                <p><strong>Total Credits (This Sem):</strong> {{ total_credits }}</p>
+                <p><strong>Total Credit Points (This Sem):</strong> {{ total_credit_points }}</p>
+                <p><strong>This Semester's GPA (SGPA):</strong> {{ sgpa }}</p>
+            </div>
+            <div class="final-gpa {{ gpa_color_class }}">
+                <strong>Your Cumulative GPA (CGPA) is:</strong> <span>{{ cgpa }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
