@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // --- Element Selections ---
     const gpaForm = document.getElementById('gpa-form');
     const addCourseBtn = document.getElementById('add-course-btn');
     const clearDataBtn = document.getElementById('clear-data-btn');
     const courseList = document.getElementById('course-list');
     const semesterInput = document.getElementById('semester-input');
     const previousSgpaContainer = document.getElementById('previous-sgpa-container');
-    
-    // --- DATA HANDLING ---
+    const whatIfBtn = document.getElementById('what-if-btn');
+    const whatIfResultEl = document.getElementById('what-if-result');
+
+    // --- DATA HANDLING (localStorage) ---
 
     // Function to save all form data to localStorage
     const saveData = () => {
@@ -98,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
         courseList.appendChild(row);
     };
 
-    // Unchanged from previous version
+    // Generates the input fields for previous semester SGPAs
     const updatePreviousSgpaFields = () => {
         const semester = parseInt(semesterInput.value, 10);
         previousSgpaContainer.innerHTML = ''; 
@@ -121,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- EVENT LISTENERS ---
 
-    // Save data on any input change
+    // Save data on any input change in the main form
     gpaForm.addEventListener('input', saveData);
     
     // Add course button
@@ -132,6 +135,54 @@ document.addEventListener('DOMContentLoaded', function () {
         if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
             localStorage.removeItem('gpaData');
             location.reload(); // Reload the page to reset the form
+        }
+    });
+
+    // "What If" calculation logic
+    whatIfBtn.addEventListener('click', () => {
+        const totalSemesters = parseInt(document.getElementById('total-semesters').value);
+        const targetCgpa = parseFloat(document.getElementById('target-cgpa').value);
+        const currentSemester = parseInt(semesterInput.value);
+
+        if (isNaN(totalSemesters) || isNaN(targetCgpa)) {
+            whatIfResultEl.textContent = "Please enter valid numbers for total semesters and target CGPA.";
+            whatIfResultEl.style.color = "#e74c3c"; // Red color for error
+            return;
+        }
+
+        const previousSgpas = [];
+        document.querySelectorAll('input[name="previous_sgpa"]').forEach(input => {
+            if (input.value) { // only consider filled inputs
+                previousSgpas.push(parseFloat(input.value));
+            }
+        });
+
+        // Validate if all previous SGPA fields are filled
+        if (previousSgpas.length !== currentSemester - 1) {
+            whatIfResultEl.textContent = "Please fill in all previous semester SGPAs.";
+            whatIfResultEl.style.color = "#e74c3c";
+            return;
+        }
+
+        const completedSgpaSum = previousSgpas.reduce((sum, gpa) => sum + gpa, 0);
+        const remainingSems = totalSemesters - (currentSemester - 1);
+
+        if (remainingSems <= 0) {
+            whatIfResultEl.textContent = "You have already completed all semesters.";
+            whatIfResultEl.style.color = "#34495e"; // Neutral color
+            return;
+        }
+
+        const requiredTotalPoints = targetCgpa * totalSemesters;
+        const pointsNeeded = requiredTotalPoints - completedSgpaSum;
+        const requiredAvgSgpa = pointsNeeded / remainingSems;
+
+        if (requiredAvgSgpa > 10.0) {
+            whatIfResultEl.innerHTML = `To reach <strong>${targetCgpa}</strong> is not possible. You would need an average SGPA of <strong style="color: #e74c3c;">${requiredAvgSgpa.toFixed(2)}</strong>.`;
+        } else if (requiredAvgSgpa < 0) {
+            whatIfResultEl.innerHTML = `You have already surpassed your target CGPA of <strong>${targetCgpa}</strong>! Keep up the good work.`;
+        } else {
+            whatIfResultEl.innerHTML = `To reach a CGPA of <strong>${targetCgpa}</strong>, you need an average SGPA of <strong style="color: #2ecc71;">${requiredAvgSgpa.toFixed(2)}</strong> over the next ${remainingSems} semester(s).`;
         }
     });
 

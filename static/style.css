@@ -151,6 +151,23 @@ button {
     transform: translateY(-2px);
 }
 
+/* "What If" Section Styling */
+.what-if-container { 
+    margin-top: 30px; 
+    padding: 20px; 
+    background-color: #f8f9fa; 
+    border-radius: 8px; 
+    border-top: 3px solid #3498db;
+}
+
+.what-if-result { 
+    margin-top: 15px; 
+    font-size: 1.2rem; 
+    font-weight: 600; 
+    padding: 10px;
+    border-radius: 5px;
+}
+
 /* Results Styling */
 .results {
     margin-top: 30px;
